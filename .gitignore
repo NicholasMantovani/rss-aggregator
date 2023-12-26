@@ -21,3 +21,4 @@
 go.work
 rssaggregator
 .env
+docker/data
