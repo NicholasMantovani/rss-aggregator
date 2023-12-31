@@ -14,10 +14,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type ApiConfig struct {
-	DB *database.Queries
-}
-
 func main() {
 	godotenv.Load(".env")
 
@@ -36,7 +32,7 @@ func main() {
 		log.Fatal("Can't connect to database: ", err)
 	}
 
-	apiConf := ApiConfig{DB: database.New(conn)}
+	apiConf := handlers.ApiConfig{DB: database.New(conn)}
 
 	router := chi.NewRouter()
 
@@ -52,6 +48,7 @@ func main() {
 	routerV1 := chi.NewRouter()
 	routerV1.Get("/healthz", handlers.Readiness)
 	routerV1.Get("/err", handlers.Error)
+	routerV1.Post("/user", apiConf.CreateUser)
 
 	router.Mount("/v1", routerV1)
 
@@ -62,7 +59,7 @@ func main() {
 
 	log.Print("Application is availabe on port: ", port)
 
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 
 	if err != nil {
 		log.Fatal(err)
