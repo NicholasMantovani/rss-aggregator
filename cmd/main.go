@@ -14,7 +14,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type apiConfig struct {
+type ApiConfig struct {
 	DB *database.Queries
 }
 
@@ -36,7 +36,8 @@ func main() {
 		log.Fatal("Can't connect to database: ", err)
 	}
 
-	apiConf := 
+	apiConf := ApiConfig{DB: database.New(conn)}
+
 	router := chi.NewRouter()
 
 	router.Use(cors.Handler(cors.Options{
