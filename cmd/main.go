@@ -48,7 +48,7 @@ func main() {
 	routerV1 := chi.NewRouter()
 	routerV1.Get("/healthz", handlers.Readiness)
 	routerV1.Get("/err", handlers.Error)
-	routerV1.Post("/user", apiConf.CreateUser)
+	routerV1.Post("/users", apiConf.CreateUser)
 
 	router.Mount("/v1", routerV1)
 

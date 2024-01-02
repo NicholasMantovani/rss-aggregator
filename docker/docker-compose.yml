@@ -5,7 +5,7 @@ services:
 
   db:
     image: postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGTES_USER: postgres
       POSTGRES_PASSWORD: example

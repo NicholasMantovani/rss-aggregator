@@ -7,5 +7,5 @@ import (
 )
 
 func Error(w http.ResponseWriter, r *http.Request) {
-	utils.RespondWithErro(w, 400, "Something went wrong")
+	utils.RespondWithError(w, 400, "Something went wrong")
 }
