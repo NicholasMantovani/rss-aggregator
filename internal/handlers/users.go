@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/NicholasMantovani/rssaggregator/internal/auth"
 	"github.com/NicholasMantovani/rssaggregator/internal/database"
 	"github.com/NicholasMantovani/rssaggregator/internal/models"
 	"github.com/NicholasMantovani/rssaggregator/internal/utils"
@@ -40,5 +41,15 @@ func (a *ApiConfig) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	utils.RespondWithJson(w, 200, models.DatabaseUserToUser(user))
+	utils.RespondWithJson(w, 201, models.DatabaseUserToUser(user))
+}
+
+func (a *ApiConfig) GetUser(w http.ResponseWriter, r *http.Request) {
+
+	apiKey, err := auth.GetApiKey(w.Header())
+	if err != nil {
+		utils.RespondWithError(w, 401, fmt.Sprintf("Auth error: %v", err))
+		return
+	}
+
 }
