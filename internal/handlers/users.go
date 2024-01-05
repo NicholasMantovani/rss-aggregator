@@ -52,4 +52,10 @@ func (a *ApiConfig) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	user, err := a.DB.GetUserByApiKey(r.Context(), apiKey)
+	if err != nil {
+		utils.RespondWithError(w, 400, fmt.Sprintf("Could not get user: %v", err))
+	}
+
+	utils.RespondWithJson(w, 200, models.DatabaseUserToUser(user))
 }
