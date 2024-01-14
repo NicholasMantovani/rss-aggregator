@@ -12,9 +12,11 @@ import (
 	"github.com/google/uuid"
 )
 
-func (a *ApiConfig) HandleCreateUser(w http.ResponseWriter, r *http.Request) {
+func (a *ApiConfig) HandleCreateFeed(w http.ResponseWriter, r *http.Request, user database.User) {
+
 	type parameters struct {
 		Name string `json:"name"`
+		Url  string `json:"url"`
 	}
 
 	params := parameters{}
@@ -28,11 +30,13 @@ func (a *ApiConfig) HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := a.DB.CreateUser(r.Context(), database.CreateUserParams{
+	feed, err := a.DB.CreateFeed(r.Context(), database.CreateFeedParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
 		Name:      params.Name,
+		Url:       params.Url,
+		UserID:    user.ID,
 	})
 
 	if err != nil {
@@ -40,9 +44,16 @@ func (a *ApiConfig) HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.RespondWithJson(w, 201, models.DatabaseUserToUser(user))
+	utils.RespondWithJson(w, 201, models.DatabaseFeedToFeed(feed))
 }
 
-func (a *ApiConfig) HandleGetUser(w http.ResponseWriter, r *http.Request, user database.User) {
-	utils.RespondWithJson(w, 200, models.DatabaseUserToUser(user))
+func (a *ApiConfig) HandleGetFeeds(w http.ResponseWriter, r *http.Request) {
+	feeds, err := a.DB.GetFeeds(r.Context())
+
+	if err != nil {
+		utils.RespondWithError(w, 400, fmt.Sprintf("Cloud not create user: %v", err))
+		return
+	}
+
+	utils.RespondWithJson(w, 201, models.DatabaseFeedsToFeeds(feeds))
 }
