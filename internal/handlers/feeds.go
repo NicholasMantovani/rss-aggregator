@@ -40,7 +40,7 @@ func (a *ApiConfig) HandleCreateFeed(w http.ResponseWriter, r *http.Request, use
 	})
 
 	if err != nil {
-		utils.RespondWithError(w, 400, fmt.Sprintf("Cloud not create user: %v", err))
+		utils.RespondWithError(w, 400, fmt.Sprintf("Cloud not create feed: %v", err))
 		return
 	}
 

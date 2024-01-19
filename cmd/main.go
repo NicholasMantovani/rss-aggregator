@@ -52,6 +52,7 @@ func main() {
 	routerV1.Get("/users", apiConf.MiddlewareAuth(apiConf.HandleGetUser))
 	routerV1.Post("/feeds", apiConf.MiddlewareAuth(apiConf.HandleCreateFeed))
 	routerV1.Get("/feeds", apiConf.HandleGetFeeds)
+	routerV1.Post("/feed_follows", apiConf.MiddlewareAuth(apiConf.HandleCreateFeedFollow))
 
 	router.Mount("/v1", routerV1)
 
