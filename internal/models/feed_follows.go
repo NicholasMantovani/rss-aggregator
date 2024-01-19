@@ -18,3 +18,11 @@ type FeedFollow struct {
 func DatabaseFeedFollowToFeedFollow(from database.FeedFollow) FeedFollow {
 	return FeedFollow{ID: from.ID, CreatedAt: from.CreatedAt, UpdatedAt: from.UpdatedAt, UserId: from.UserID, FeedId: from.FeedID}
 }
+
+func DatabaseFeedFollowsToFeedFollows(from []database.FeedFollow) []FeedFollow {
+	out := []FeedFollow{}
+	for _, f := range from {
+		out = append(out, DatabaseFeedFollowToFeedFollow(f))
+	}
+	return out
+}
