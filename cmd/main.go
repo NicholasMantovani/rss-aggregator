@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
+	businesslogic "github.com/NicholasMantovani/rssaggregator/internal/businessLogic"
 	"github.com/NicholasMantovani/rssaggregator/internal/database"
 	"github.com/NicholasMantovani/rssaggregator/internal/handlers"
 	"github.com/go-chi/chi/v5"
@@ -15,6 +17,7 @@ import (
 )
 
 func main() {
+
 	godotenv.Load(".env")
 
 	port := os.Getenv("PORT")
@@ -32,7 +35,11 @@ func main() {
 		log.Fatal("Can't connect to database: ", err)
 	}
 
-	apiConf := handlers.ApiConfig{DB: database.New(conn)}
+	db := database.New(conn)
+
+	apiConf := handlers.ApiConfig{DB: db}
+
+	go businesslogic.StartScraping(db, 10, time.Minute)
 
 	router := chi.NewRouter()
 
@@ -55,7 +62,6 @@ func main() {
 	routerV1.Post("/feed_follows", apiConf.MiddlewareAuth(apiConf.HandleCreateFeedFollow))
 	routerV1.Get("/feed_follows", apiConf.MiddlewareAuth(apiConf.HandleGetFeedsFollow))
 	routerV1.Delete("/feed_follows/{id}", apiConf.MiddlewareAuth(apiConf.HandleDeleteFeedFollow))
-
 
 	router.Mount("/v1", routerV1)
 
