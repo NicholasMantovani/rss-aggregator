@@ -46,3 +46,13 @@ func (a *ApiConfig) HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 func (a *ApiConfig) HandleGetUser(w http.ResponseWriter, r *http.Request, user database.User) {
 	utils.RespondWithJson(w, 200, models.DatabaseUserToUser(user))
 }
+
+func (a *ApiConfig) HandleGetPostsForUser(w http.ResponseWriter, r *http.Request, user database.User) {
+	posts, err := a.DB.GetPostsForUsers(r.Context(), database.GetPostsForUsersParams{UserID: user.ID, Limit: 10})
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Cloud not get posts from user: %v", err))
+		return
+	}
+
+	utils.RespondWithJson(w, http.StatusOK, models.DatabasePostsToPosts(posts))
+}
